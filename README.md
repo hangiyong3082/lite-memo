@@ -7,7 +7,7 @@
 ## 빌드 & 실행
 
 ```bash
-gcc test1.c -o litememo
+gcc main.c -o litememo
 ./litememo
 ```
 
