@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 #define MAX_LEN 256
 
 #define MODE_NONE     0
@@ -25,6 +24,7 @@ int main() {
 
     printf("Type name of text file >>> ");
     scanf("%99s", fileName);
+    while (getchar() != '\n');
     fp = fopen(fileName, "r");
     if (fp == NULL) {
         printf("Can't open file\n");
@@ -42,15 +42,16 @@ int main() {
 
     while (1) {
         fp = fopen(fileName, "r");
-        while (fscanf(fp, "%255[^\n]%*c", line) == 1) {
+        while (fscanf(fp, "%[^\n]%*c", line) == 1) {
             printf("%3d] %s\n", currentLine++, line);
         }
         maxLine = currentLine - 1;
         currentLine = 1;
         fclose(fp);
         printf(">>> ");
-        scanf(" %[^\n]", input);
-        getchar();
+        fflush(stdout);
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\r\n")] = '\0';
 
         FILE* temp;
         char buffer[MAX_LEN];
@@ -63,27 +64,20 @@ int main() {
             break;
         }
         else if (sscanf(input, "del]%d-%d", &inputLineNum, &inputLineNum2) == 2) {
-            mode = MODE_DELETE;
-            startLine = inputLineNum;
-            endLine = inputLineNum2;
+            mode = MODE_DELETE; startLine = inputLineNum; endLine = inputLineNum2;
         }
-        else if (sscanf(input, "del]%d%c", &inputLineNum, &tail) == 1) {
-            mode = MODE_DELETE;
-            startLine = inputLineNum;
-            endLine = inputLineNum;
+        else if (sscanf(input, "del]%d-", &inputLineNum) == 1
+            && input[strlen(input) - 1] == '-') { 
+            mode = MODE_DELETE; startLine = inputLineNum; endLine = maxLine;
         }
-        else if (sscanf(input, "del]%d-", &inputLineNum) == 1) {
-            mode = MODE_DELETE;
-            startLine = inputLineNum;
-            endLine = maxLine;
+        else if (sscanf(input, "del]%d", &inputLineNum) == 1) {
+            mode = MODE_DELETE; startLine = inputLineNum; endLine = inputLineNum;
         }
         else if (sscanf(input, "%d]+%255[^\n]", &inputLineNum, contentToAdd) == 2) {
-            mode = MODE_APPEND;
-            startLine = inputLineNum;
+            mode = MODE_APPEND; startLine = inputLineNum;
         }
         else if (sscanf(input, "%d]%255[^\n]", &inputLineNum, contentToAdd) == 2) {
-            mode = MODE_REWRITE;
-            startLine = inputLineNum;
+            mode = MODE_REWRITE; startLine = inputLineNum;
         }
         if (mode != MODE_NONE) {
             fp = openFile(fileName, "r");
@@ -124,15 +118,16 @@ int main() {
 
             fclose(fp);
             fclose(temp);
-            remove(fileName);
-            rename("temp.txt", fileName);
+            printf("remove -> %d\n",remove(fileName));
+            printf("rename -> %d\n",rename("temp.txt", fileName));
         }
         else {
             fp = openFile(fileName, "a");
             fprintf(fp, "%s\n", input);
             fclose(fp);
         }
-        for (int i = 0;i < 100;i++)
+        printf("mode -> %d\n", mode);
+        for (int i = 0;i < 10;i++)
             printf("\n");
     }
 
