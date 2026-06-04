@@ -30,6 +30,7 @@ int main() {
         printf("Can't open file\n");
         return 1;
     }
+    fclose(fp);
     printf("File was successfully opened\n\n");
     printf("-----content-----\n");
     char line[MAX_LEN];
@@ -42,7 +43,8 @@ int main() {
 
     while (1) {
         fp = fopen(fileName, "r");
-        while (fscanf(fp, "%[^\n]%*c", line) == 1) {
+        while (fgets(line, sizeof(line), fp) != NULL) {
+            line[strcspn(line, "\n")] = '\0';
             printf("%3d] %s\n", currentLine++, line);
         }
         maxLine = currentLine - 1;
@@ -127,7 +129,7 @@ int main() {
             fclose(fp);
         }
         printf("mode -> %d\n", mode);
-        for (int i = 0;i < 10;i++)
+        for (int i = 0;i < 30;i++)
             printf("\n");
     }
 
