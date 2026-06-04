@@ -20,6 +20,9 @@ Type name of text file >>> memo.txt
 > 파일이 존재하지 않으면 오류가 발생합니다. 미리 파일을 생성해 두세요.
 
 ---
+<img width="267" height="248" alt="Desktop2026 06 04-20 11 43 02 DVRonline-video-cutter com-ezgif com-video-to-gif-converter (1)" src="https://github.com/user-attachments/assets/8d4a8959-40ab-4d52-bb90-47cd1ad485ca" />
+
+---
 
 ## 명령어
 
